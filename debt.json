@@ -1,0 +1,19 @@
+{
+  "label": "India Fiscal Pressure Tracker",
+  "methodology": "Estimated live counter between official budget snapshots",
+  "baseDebtCrore": 20053000,
+  "baseDate": "2026-03-31T00:00:00+05:30",
+  "targetDebtCrore": 21863000,
+  "targetDate": "2027-03-31T00:00:00+05:30",
+  "population": 1460000000,
+  "debtToGdp": 55.6,
+  "totalExpenditureLakhCrore": 53.47,
+  "interestPaymentsLakhCrore": 14.04,
+  "interestShareOfExpenditure": 26,
+  "capexLakhCrore": 12.21,
+  "educationLakhCrore": 1.39,
+  "healthLakhCrore": 1.05,
+  "lastRefreshed": "2026-06-21T17:58:00+05:30",
+  "sourceUrl": "https://www.indiabudget.gov.in/doc/rec/annex9.pdf",
+  "budgetSourceUrl": "https://prsindia.org/files/budget/budget_parliament/2026/Union_Budget_Analysis-2026-27.pdf"
+}
