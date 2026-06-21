@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>India Fiscal Pressure Tracker</title>
+  <meta name="description" content="Track India's debt, common man impact, and how India compares with China, the US, and Japan." />
+  <style>
+    :root {
+      --bg: #f7f6f2; --surface: #ffffff; --surface-2: #f3f0ec; --surface-3: #ece8e2;
+      --text: #1f2937; --muted: #6b7280; --border: #d6d3d1;
+      --primary: #01696f; --primary-dark: #0c4e54; --success: #437a22; --danger: #964219; --accent: #d19900;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08); --radius: 18px; --radius-sm: 12px;
+      --space-3: 12px; --space-4: 16px; --space-5: 20px; --space-6: 24px; --space-8: 32px;
+    }
+    [data-theme="dark"] {
+      --bg: #171614; --surface: #1c1b19; --surface-2: #242320; --surface-3: #2a2825;
+      --text: #e5e7eb; --muted: #9ca3af; --border: #3f3f46;
+      --primary: #4f98a3; --primary-dark: #78b3bc; --success: #6daa45; --danger: #bb653b; --accent: #e8af34;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    a { color: var(--primary); }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: var(--space-6); }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); margin-bottom: var(--space-8); }
+    .brand { display: flex; align-items: center; gap: var(--space-3); font-weight: 700; }
+    .logo { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: grid; place-items: center; color: white; font-size: 18px; box-shadow: var(--shadow); }
+    .theme-toggle { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 999px; padding: 10px 14px; cursor: pointer; }
+    .hero, .section { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-6); box-shadow: var(--shadow); }
+    .hero-card { background: linear-gradient(180deg, var(--surface), var(--surface-2)); }
+    .eyebrow { color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; font-size: 12px; margin-bottom: var(--space-3); }
+    h1 { font-size: clamp(2.2rem, 5vw, 4.5rem); line-height: 1.02; margin: 0 0 var(--space-4); }
+    h2 { margin-top: 0; margin-bottom: var(--space-3); font-size: 1.45rem; }
+    .lead { color: var(--muted); max-width: 62ch; margin-bottom: var(--space-5); }
+    .counter { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 800; line-height: 1.08; margin: var(--space-4) 0; word-break: break-word; }
+    .subcounter { font-size: 1rem; color: var(--muted); margin-top: -4px; margin-bottom: var(--space-5); }
+    .meta { display: flex; flex-wrap: wrap; gap: var(--space-3); color: var(--muted); font-size: 14px; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 999px; padding: 8px 12px; background: var(--surface-3); }
+    .status-dot { width: 10px; height: 10px; border-radius: 999px; background: var(--success); display: inline-block; }
+    .comparison-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); margin-top: var(--space-8); }
+    .comparison-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-5); }
+    .kicker { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .big-number { font-size: 1.6rem; line-height: 1.1; font-weight: 800; margin-top: 10px; }
+    .small-copy { color: var(--muted); font-size: 14px; margin-top: 8px; }
+    .impact-list, .traffic-list { margin: 0; padding-left: 18px; }
+    .impact-list li, .traffic-list li { margin-bottom: 10px; }
+    .bar-row { display: grid; gap: 6px; margin-top: 14px; }
+    .bar-label { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); }
+    .bar-track { width: 100%; height: 12px; background: var(--surface-3); border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; }
+    .interest { background: linear-gradient(90deg, var(--danger), #d97706); }
+    .capex { background: linear-gradient(90deg, var(--primary), #2563eb); }
+    .edu { background: linear-gradient(90deg, var(--accent), #f59e0b); }
+    .health { background: linear-gradient(90deg, var(--success), #16a34a); }
+    .country-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); margin-top: var(--space-5); }
+    .country-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-5); background: var(--surface-2); }
+    .country-card.highlight { outline: 2px solid var(--primary); background: color-mix(in srgb, var(--surface) 90%, var(--primary) 10%); }
+    .country-name { font-weight: 800; font-size: 1rem; }
+    .country-debt { font-size: 1.7rem; font-weight: 800; margin-top: 8px; }
+    .note { color: var(--muted); font-size: 14px; }
+    pre { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-4); overflow-x: auto; font-size: 13px; }
+    .footer { margin-top: var(--space-8); color: var(--muted); font-size: 14px; padding-bottom: var(--space-8); }
+    @media (max-width: 980px) { .hero, .section, .comparison-grid, .country-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 860px) { .wrap { padding: var(--space-4); } .topbar { align-items: flex-start; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="topbar">
+      <div class="brand"><div class="logo">₹</div><div>India Fiscal Pressure Tracker</div></div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">Toggle theme</button>
+    </div>
+
+    <section class="hero">
+      <div class="card hero-card">
+        <div class="eyebrow">Debt, but in real life terms</div>
+        <h1>India’s debt is a policy number. Its impact shows up in your daily life.</h1>
+        <p class="lead">This tracker connects sovereign debt to your wallet, taxes, jobs, hospitals, roads, and the government’s room to respond in a crisis.</p>
+        <div class="counter" id="debtValue">Loading...</div>
+        <div class="subcounter" id="headlineSubcopy">Calculating live sovereign debt estimate...</div>
+        <div class="meta">
+          <div class="pill"><span class="status-dot"></span><span id="methodLabel">Estimating...</span></div>
+          <div class="pill"><span id="lastUpdated">Waiting for data...</span></div>
+        </div>
+        <div class="comparison-grid">
+          <div class="comparison-card"><div class="kicker">Debt per Indian</div><div class="big-number" id="perCitizen">-</div><div class="small-copy">Makes the burden personal, not abstract.</div></div>
+          <div class="comparison-card"><div class="kicker">Interest per second</div><div class="big-number" id="interestPerSecond">-</div><div class="small-copy">Budget money getting locked into past borrowing.</div></div>
+          <div class="comparison-card"><div class="kicker">Debt to GDP</div><div class="big-number" id="debtToGdp">-</div><div class="small-copy">Shows how stretched the economy is.</div></div>
+          <div class="comparison-card"><div class="kicker">Interest share of spending</div><div class="big-number" id="interestShare">-</div><div class="small-copy">How much current spending goes to old debt.</div></div>
+        </div>
+      </div>
+
+      <aside class="card">
+        <div class="eyebrow">How it hits the common man</div>
+        <h2>This is where debt becomes personal</h2>
+        <ul class="impact-list">
+          <li><strong>Taxes:</strong> A larger interest bill means more current revenue is used to pay for the past.</li>
+          <li><strong>Jobs:</strong> If capex gets squeezed, roads, rail, housing, and related job creation can slow.</li>
+          <li><strong>EMIs:</strong> Heavy government borrowing can keep financing conditions tighter for longer.</li>
+          <li><strong>Hospitals and schools:</strong> More money to interest means less room for fresh social spending.</li>
+          <li><strong>Crisis response:</strong> Lower fiscal space means less room to respond to shocks quickly.</li>
+        </ul>
+
+        <div class="bar-row"><div class="bar-label"><span>Interest payments</span><span id="interestBillLabel">-</span></div><div class="bar-track"><div class="bar-fill interest" id="interestBar"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Capital expenditure</span><span id="capexLabel">-</span></div><div class="bar-track"><div class="bar-fill capex" id="capexBar"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Education</span><span id="educationLabel">-</span></div><div class="bar-track"><div class="bar-fill edu" id="educationBar"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Health</span><span id="healthLabel">-</span></div><div class="bar-track"><div class="bar-fill health" id="healthBar"></div></div></div>
+      </aside>
+    </section>
+
+    <section class="section" style="margin-top: 32px;">
+      <div class="card">
+        <div class="eyebrow">India vs competitors</div>
+        <h2>How other countries manage higher debt</h2>
+        <p class="lead">Debt size alone does not decide risk. What matters is growth, who holds the debt, how transparent it is, and whether the government can refinance it safely.</p>
+        <div class="country-grid" id="countryGrid"></div>
+        <p class="note">India’s story is different from China, Japan, and the US. China’s challenge is local government and hidden debt, Japan relies heavily on domestic holders and the BOJ, and the US benefits from reserve-currency status. India’s advantage is growth and largely domestic financing, but it still needs discipline because fiscal room is limited. </p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">What to watch</div>
+        <h2>What India should learn from China and others</h2>
+        <ul class="traffic-list">
+          <li><strong>China:</strong> Avoid opaque local-government style debt build-up and off-balance-sheet financing.</li>
+          <li><strong>Japan:</strong> High debt can be carried longer when financing is domestic, but that does not remove long-term risk.</li>
+          <li><strong>US:</strong> Reserve-currency privilege gives more borrowing space, which India does not have.</li>
+          <li><strong>India:</strong> Best protection is higher growth, cleaner fiscal math, and ensuring borrowing creates productive assets.</li>
+        </ul>
+        <h2 style="margin-top: 24px;">Transparent methodology</h2>
+        <ul>
+          <li>Debt source: <a id="sourceLink" href="#" target="_blank" rel="noopener noreferrer">Official debt statement</a></li>
+          <li>Budget source: <a id="budgetSourceLink" href="#" target="_blank" rel="noopener noreferrer">Budget analysis source</a></li>
+          <li>Population input: <span id="populationText">-</span></li>
+          <li>Base date: <span id="baseDateText">-</span></li>
+          <li>Target date: <span id="targetDateText">-</span></li>
+        </ul>
+        <pre id="jsonPreview">Loading JSON...</pre>
+      </div>
+    </section>
+
+    <div class="footer">Built for GitHub Pages. One JSON file powers the debt, budget, and country comparison sections.</div>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>
